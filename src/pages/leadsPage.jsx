@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Modal from "../components/modal";
+import Filters from "../components/leadFilters";
 import {
   Squares2X2Icon,
   UserIcon,
@@ -119,6 +120,16 @@ export default function LeadsPage() {
           </button>
         </div>
         <hr className="border-gray-300" />
+
+        {/* Filters & Search */}
+        <div className="mb-4">
+          {/* Filters & Search */}
+          <div className="mb-4">
+            <Filters onResults={(filteredLeads) => setLeads(filteredLeads)} />
+          </div>
+
+          {/* <Filters /> */}
+        </div>
 
         {/* Leads Table */}
         <LeadTable leads={leads} />
