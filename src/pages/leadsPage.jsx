@@ -10,6 +10,7 @@ import {
   CalendarIcon,
   Bars3Icon,
 } from "@heroicons/react/24/outline";
+import LeadTable from "../components/LeadTable";
 
 export default function LeadsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -113,6 +114,7 @@ export default function LeadsPage() {
             + Add Lead
           </button>
         </div>
+        <LeadTable leads={leads} />
         <hr className="border-gray-300" />
       </div>
     </div>
