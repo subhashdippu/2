@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import Modal from "../components/modal";
 import {
   Squares2X2Icon,
   UserIcon,
@@ -10,11 +10,11 @@ import {
   CalendarIcon,
   Bars3Icon,
 } from "@heroicons/react/24/outline";
-import LeadTable from "../components/LeadTable";
+import LeadTable from "../components/leadTable";
 
 export default function LeadsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [leads, setLeads] = useState([
     {
       _id: "1",
@@ -97,6 +97,7 @@ export default function LeadsPage() {
 
       {/* Main content */}
       <div className="flex-1 p-6 ">
+        {/* Top bar */}
         <div className="flex justify-between items-center mb-4 ">
           {!sidebarOpen && (
             <button
@@ -110,12 +111,18 @@ export default function LeadsPage() {
             <h1 className="text-2xl font-bold">Leads</h1>
             <p className="text-gray-500">Manage and track your leads</p>
           </div>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
             + Add Lead
           </button>
         </div>
-        <LeadTable leads={leads} />
         <hr className="border-gray-300" />
+
+        {/* Leads Table */}
+        <LeadTable leads={leads} />
+        <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
       </div>
     </div>
   );
