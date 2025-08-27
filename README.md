@@ -7,7 +7,6 @@
 
 A simple Lead Management application built as part of an assignment. It allows users to manage leads with filtering, searching, and basic CRUD operations.
 
-<pre><center><a href="[https://tutedude-6kzz.vercel.app/](https://tutedude-6kzz.vercel.app/)"><b>https://tutedude-6kzz.vercel.app</b></a></center></pre>
 
 ## 👨‍💻 Tech Stack Used
 
