@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
-export default function LeadFilters({ leads = [], onResults }) {
+export default function LeadFilters({ onResults }) {
   const [showFilters, setShowFilters] = useState(true);
   const [conditions, setConditions] = useState([
     { field: "status", value: "" },
@@ -9,52 +9,52 @@ export default function LeadFilters({ leads = [], onResults }) {
   const [matchType, setMatchType] = useState("AND");
   const [search, setSearch] = useState("");
 
-  const handleAddFilter = () =>
+  const handleAddFilter = () => {
     setConditions([...conditions, { field: "status", value: "" }]);
-  const handleRemoveFilter = (index) =>
+  };
+
+  const handleRemoveFilter = (index) => {
     setConditions(conditions.filter((_, i) => i !== index));
+  };
+
   const handleChange = (index, field, value) => {
     const updated = [...conditions];
     updated[index][field] = value;
     setConditions(updated);
   };
 
-  const applyFilters = () => {
-    let filtered = [...leads];
+  const applyFilters = async () => {
+    try {
+      const params = new URLSearchParams();
 
-    // Apply search filter
-    if (search) {
-      filtered = filtered.filter(
-        (lead) =>
-          lead.name.toLowerCase().includes(search.toLowerCase()) ||
-          lead.email.toLowerCase().includes(search.toLowerCase()) ||
-          lead.phone.includes(search)
+      if (search) params.append("search", search);
+      if (conditions.length > 0) {
+        params.append("conditions", JSON.stringify(conditions));
+        params.append("matchType", matchType);
+      }
+
+      const res = await fetch(
+        `http://localhost:5001/api/leads?${params.toString()}`
       );
+      const data = await res.json();
+      onResults(data); // send filtered leads back to parent
+    } catch (err) {
+      console.error("Filter error:", err);
     }
-
-    // Apply conditions filter
-    if (conditions.length > 0) {
-      filtered = filtered.filter((lead) => {
-        const results = conditions.map((cond) => {
-          const fieldValue = lead[cond.field]
-            ? lead[cond.field].toString().toLowerCase()
-            : "";
-          return fieldValue.includes(cond.value.toLowerCase());
-        });
-        return matchType === "AND"
-          ? results.every(Boolean)
-          : results.some(Boolean);
-      });
-    }
-
-    onResults(filtered); // send filtered leads back to parent
   };
 
-  const clearFilters = () => {
+  const clearFilters = async () => {
     setSearch("");
     setConditions([{ field: "status", value: "" }]);
     setMatchType("AND");
-    onResults(leads); // reset to original leads
+
+    try {
+      const res = await fetch("http://localhost:5001/api/leads");
+      const data = await res.json();
+      onResults(data);
+    } catch (err) {
+      console.error("Reset filter error:", err);
+    }
   };
 
   return (
