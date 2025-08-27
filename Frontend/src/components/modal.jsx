@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-export default function AddLeadModal({ open, onClose, addLead }) {
+export default function AddLeadModal({ open, onClose }) {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -30,19 +30,28 @@ export default function AddLeadModal({ open, onClose, addLead }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
     setSuccess(false);
 
     try {
-      const newLead = {
-        ...formData,
-        _id: Date.now().toString(),
-        updatedAt: new Date().toISOString(),
-      };
-      addLead(newLead);
+      const res = await fetch("http://localhost:5001/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.message || "Failed to add lead");
+      }
+
+      const data = await res.json();
+      console.log("Lead saved:", data);
 
       setSuccess(true);
       setFormData({
@@ -63,9 +72,9 @@ export default function AddLeadModal({ open, onClose, addLead }) {
         heardFrom: "",
       });
 
-      onClose(); // Close modal after adding
+      onClose(); // Close modal after success
     } catch (err) {
-      setError("Failed to add lead");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -73,7 +82,7 @@ export default function AddLeadModal({ open, onClose, addLead }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div className="bg-white rounded-lg shadow-lg max-w-3xl p-6">
+      <div className="bg-white rounded-lg shadow-lg  max-w-3xl p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold">Add Lead</h2>
