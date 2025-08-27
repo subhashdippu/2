@@ -26,18 +26,13 @@ mern-stack-project/
 │   ├── config/
 │   │   └── db.js
 │   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── friendController.js
-│   │   └── userController.js
+│   │   ├── leadController.js
 │   ├── models/
-│   │   ├── User.js
-│   │   └── Friend.js
+│   │   ├── Lead.js
 │   ├── routes/
-│   │   ├── authRoutes.js
-│   │   ├── userRoutes.js
-│   │   └── friendRoutes.js
+│   │   ├── leadRoutes.js
 │   ├── middleware/
-│   │   └── authMiddleware.js
+│   │   └── errorHandler.js
 │   ├── .env
 │   ├── server.js
 │   └── package.json
@@ -46,15 +41,11 @@ mern-stack-project/
 │   │   └── index.html
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── FriendList.js
-│   │   │   ├── MutualFriend.js
-│   │   │   ├── Navbar.js
-│   │   │   └── UserData.js
+│   │   │   ├── leadFilters.js
+│   │   │   ├── leadTable.js
+│   │   │   ├── modal.js
 │   │   ├── pages/
-│   │   │   ├── Home.js
-│   │   │   └── Main.js
-│   │   │   └── SignIn.js
-│   │   │   └── SignUp.js
+│   │   │   ├── leadsPage.js
 │   │   ├── App.js
 │   │   ├── index.js
 │   │   ├── App.css
