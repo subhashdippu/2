@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import Modal from "../components/modal";
-import Filters from "../components/leadFilters";
+import React, { useState, useEffect } from "react";
+import LeadTable from "../components/LeadTable";
+import Filters from "../components/LeadFilters";
+import Modal from "../components/Modal";
+
 import {
   Squares2X2Icon,
   UserIcon,
@@ -11,55 +13,43 @@ import {
   CalendarIcon,
   Bars3Icon,
 } from "@heroicons/react/24/outline";
-import LeadTable from "../components/leadTable";
 
 export default function LeadsPage() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [leads, setLeads] = useState([
-    {
-      _id: "1",
-      name: "John Doe",
-      phone: "123-456-7890",
-      email: "john@example.com",
-      status: "New",
-      qualification: "High",
-      interestField: "Software",
-      source: "Website",
-      assignedTo: "Alice",
-      updatedAt: "2025-08-24T10:00:00Z",
-    },
-    {
-      _id: "2",
-      name: "Jane Smith",
-      phone: "987-654-3210",
-      email: "jane@example.com",
-      status: "Qualified",
-      qualification: "Medium",
-      interestField: "Hardware",
-      source: "Referral",
-      assignedTo: "Bob",
-      updatedAt: "2025-08-25T12:30:00Z",
-    },
-    {
-      _id: "3",
-      name: "Michael Johnson",
-      phone: "555-123-4567",
-      email: "michael@example.com",
-      status: "Follow-Up",
-      qualification: "Low",
-      interestField: "Consulting",
-      source: "Event",
-      assignedTo: "Charlie",
-      updatedAt: "2025-08-26T14:15:00Z",
-    },
-  ]);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [leads, setLeads] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch leads from backend
+  useEffect(() => {
+    const fetchLeads = async () => {
+      try {
+        const response = await fetch("http://localhost:5001/api/leads");
+        if (!response.ok) throw new Error("Failed to fetch leads");
+        const data = await response.json();
+        setLeads(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLeads();
+  }, []);
+
+  const addLead = (newLead) => {
+    setLeads((prevLeads) => [...prevLeads, newLead]);
+  };
+
+  if (loading) return <p className="p-4">Loading leads...</p>;
+  if (error) return <p className="p-4 text-red-500">Error: {error}</p>;
 
   return (
     <div className="flex">
       {/* Sidebar */}
       {sidebarOpen && (
-        <aside className="w-64 h-screen p-4 border border-gray-300">
+        <aside className="w-64  h-screen p-4 border border-gray-300">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold">LeadCRM</h2>
             <button
@@ -133,7 +123,11 @@ export default function LeadsPage() {
 
         {/* Leads Table */}
         <LeadTable leads={leads} />
-        <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <Modal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          addLead={addLead}
+        />
       </div>
     </div>
   );

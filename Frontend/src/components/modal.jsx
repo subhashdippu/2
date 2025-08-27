@@ -36,7 +36,6 @@ export default function AddLeadModal({ open, onClose, addLead }) {
     setError("");
     setSuccess(false);
 
-    // Simulate adding lead locally
     try {
       const newLead = {
         ...formData,
