@@ -17,4 +17,15 @@ const createLead = async (req, res) => {
   }
 };
 
-module.exports = { createLead };
+const deleteLead = async (req, res) => {
+  try {
+    const lead = await Lead.findById(req.params.id);
+    if (!lead) return res.status(404).json({ message: "Lead not found" });
+
+    await lead.remove();
+    res.json({ message: "Lead removed" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+module.exports = { createLead, deleteLead };
